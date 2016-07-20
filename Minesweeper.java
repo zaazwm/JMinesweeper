@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /*
 The MIT License (MIT)
@@ -98,6 +99,7 @@ public class Minesweeper extends JPanel {
 		for(int iy=0;iy<y;iy++) {
 			for(int jx=0;jx<x;jx++) {
 				mineButtons[iy*x+jx]=new JButton(" ");
+				mineButtons[iy*x+jx].setOpaque(true);
 				mineButtons[iy*x+jx].setPreferredSize(dim);
 				mineButtons[iy*x+jx].setFocusable(false);
 				mineButtons[iy*x+jx].setFont(mineButtons[iy*x+jx].getFont().deriveFont(Font.BOLD));
@@ -119,19 +121,28 @@ public class Minesweeper extends JPanel {
 	
 	private void checkWin() {
 		int found = 0;
+		int untouched = 0;
 		for(int y=0;y<sizeY;y++) {
 			for(int x=0;x<sizeX;x++) {
 				if(mineButtons[y*sizeX+x].getBackground().equals(Color.RED) && mineSet.contains(y*sizeX+x))
 					found++;
+				else if(mineButtons[y*sizeX+x].getBackground().equals(defaultColor) && mineButtons[y*sizeX+x].getText().equals(" "))
+					untouched++;
 			}
 		}
-		if(found==mineSet.size()) {
+		if(found+untouched==mineSet.size()) {
 			JOptionPane.showMessageDialog(Minesweeper.this, "Succeed!");
 			refresh();
 		}
 	}
 
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		JFrame frame = new JFrame("Minesweeper");
 		Minesweeper mw = new Minesweeper();
 		
