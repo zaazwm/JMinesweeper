@@ -3,9 +3,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -59,6 +62,8 @@ public class Minesweeper extends JPanel {
 	
 	private Random rnd;
 	
+	private Dimension preferredSize = new Dimension(50,50); 
+	
 	private int sizeX;
 	private int sizeY;
 	
@@ -92,10 +97,20 @@ public class Minesweeper extends JPanel {
 		c.gridwidth=1;
 		c.gridheight=1;
 		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int swidth = (int)screenSize.getWidth();
+		int sheight = (int)screenSize.getHeight()-100;
+		
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		swidth = gd.getDisplayMode().getWidth();
+		sheight = gd.getDisplayMode().getHeight()-100;
+		
 		mineButtons = new JButton[x*y];
-		int unitx = this.getWidth()/x;
-		int unity = this.getHeight()/y;
-		Dimension dim = new Dimension(Math.min(unitx, unity),Math.min(unitx, unity));
+//		int unitx = this.getWidth()/x;
+//		int unity = this.getHeight()/y;
+		int unitx = swidth/x;
+		int unity = sheight/y;
+		Dimension dim = new Dimension(Math.min(preferredSize.width, Math.min(unitx, unity)),Math.min(preferredSize.height,Math.min(unitx, unity)));
 		for(int iy=0;iy<y;iy++) {
 			for(int jx=0;jx<x;jx++) {
 				mineButtons[iy*x+jx]=new JButton(" ");
@@ -113,6 +128,11 @@ public class Minesweeper extends JPanel {
 		}
 		
 		revalidate();
+		JFrame frame = (JFrame)SwingUtilities.getWindowAncestor(this);
+		if(frame!=null) {
+			frame.pack();
+			frame.setLocationRelativeTo(null);
+		}
 	}
 	
 	private void refresh() {
@@ -134,6 +154,7 @@ public class Minesweeper extends JPanel {
 			JOptionPane.showMessageDialog(Minesweeper.this, "Succeed!");
 			refresh();
 		}
+
 	}
 
 	public static void main(String[] args) {
@@ -142,7 +163,7 @@ public class Minesweeper extends JPanel {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		JFrame frame = new JFrame("Minesweeper");
 		Minesweeper mw = new Minesweeper();
 		
@@ -158,15 +179,22 @@ public class Minesweeper extends JPanel {
 		JLabel mineLabel = new JLabel("Mines:");
 		final JTextField mineField = new JTextField("10",5);
 		
-		JButton startButton = new JButton("(Re)start");
-		startButton.addActionListener(new ActionListener() {
+		final JButton startButton = new JButton("(Re)Start");
+		
+		ActionListener restartActionListener = new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mw.initialize(Integer.parseInt(rowField.getText()), Integer.parseInt(colField.getText()), Integer.parseInt(mineField.getText()));
 			}
 			
-		});
+		};
+		
+		startButton.addActionListener(restartActionListener);
+		rowField.addActionListener(restartActionListener);
+		colField.addActionListener(restartActionListener);
+		mineField.addActionListener(restartActionListener);
+		
 		
 		JLabel cprtLabel = new JLabel("by W.Zhu");
 		
