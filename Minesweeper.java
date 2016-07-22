@@ -165,7 +165,7 @@ public class Minesweeper extends JPanel {
 		}
 
 		JFrame frame = new JFrame("Minesweeper");
-		Minesweeper mw = new Minesweeper();
+		final Minesweeper mw = new Minesweeper();
 		
 		frame.setLayout(new BorderLayout());
 		
@@ -244,6 +244,8 @@ public class Minesweeper extends JPanel {
 				return;
 			
 			if(mineSet.contains(y*sizeX+x)) {
+				for(int m : mineSet)
+					mineButtons[m].setBackground(Color.RED);
 				JOptionPane.showMessageDialog(Minesweeper.this, "Boom!");
 				refresh();
 			}
@@ -262,6 +264,8 @@ public class Minesweeper extends JPanel {
 				return;
 			
 			if(mineSet.contains(y*sizeX+x)) {
+				for(int m : mineSet)
+					mineButtons[m].setBackground(Color.RED);
 				JOptionPane.showMessageDialog(Minesweeper.this, "Boom!");
 				refresh();
 			}
