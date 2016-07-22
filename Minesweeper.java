@@ -238,6 +238,8 @@ public class Minesweeper extends JPanel {
 				int mineFoundCount = 0;
 				for(int ny = y-1;ny<=y+1;ny++) {
 					for(int nx=x-1;nx<=x+1;nx++) {
+						if(nx<0 || nx>=sizeX || ny<0 || ny>=sizeY)
+							continue;
 						if(mineButtons[ny*sizeX+nx].getBackground().equals(Color.RED))
 							mineFoundCount++;
 					}
