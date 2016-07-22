@@ -151,6 +151,8 @@ public class Minesweeper extends JPanel {
 			}
 		}
 		if(found+untouched==mineSet.size()) {
+			for(int m : mineSet)
+				mineButtons[m].setBackground(Color.RED);
 			JOptionPane.showMessageDialog(Minesweeper.this, "Succeed!");
 			refresh();
 		}
